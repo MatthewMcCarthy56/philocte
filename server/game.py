@@ -45,7 +45,7 @@ class CardState:
         self.controller = controller
         self.hp = hp
     def __str__(self):
-        return f'[{self.controller}:{self.hp}/{str(self.card)}]'
+        return f'{self.controller}:{self.hp}/{str(self.card)}'
     def __eq__(self, other):
         if other is None or other.type != 'card':
             return False
@@ -119,16 +119,48 @@ class GameState:
     def equivalent(self, other):
         return self.current_player == other.current_player and self.board == other.board
     def __str__(self):
-        stringified = ''
+        text_width = 14 * len(self.board)
+        text_height = 3 * len(self.board[0])
+        board_text = [[' ' for _ in range(text_height)] for _ in range(text_width)]
         for y in range(len(self.board[0])):
             for x in range(len(self.board)):
                 cell = self.board[x][y]
+                board_text[x * 14][y * 3] = '┌'
+                board_text[x * 14][y * 3 + 1] = '│'
+                board_text[x * 14][y * 3 + 2] = '└'
+                board_text[(x + 1) * 14 - 1][y * 3] = '┐'
+                board_text[(x + 1) * 14 - 1][y * 3 + 1] = '│'
+                board_text[(x + 1) * 14 - 1][y * 3 + 2] = '┘'
                 if cell is None:
-                    stringified += '[          ]'
+                    continue
                 elif cell.type == 'wall':
-                    stringified += '[##########]'
+                    for col in range(3):
+                        for row in range(x * 14 + 1, (x + 1) * 14 - 1):
+                            board_text[row][y * 3 + col] = '#'
                 else:
-                    stringified += str(cell)
+                    for col, char in zip(range(x * 14 + 2, x * 14 + 13), str(cell)):
+                        board_text[col][y * 3 + 1] = char
+                    card = cell.card
+                    if 0 in card.arrow_ids:
+                        board_text[x * 14 + 2][y * 3] = '↖'
+                    if 1 in card.arrow_ids:
+                        board_text[x * 14 + 7][y * 3] = '↑'
+                    if 2 in card.arrow_ids:
+                        board_text[x * 14 + 11][y * 3] = '↗'
+                    if 3 in card.arrow_ids:
+                        board_text[x * 14 + 12][y * 3 + 1] = '→'
+                    if 4 in card.arrow_ids:
+                        board_text[x * 14 + 11][y * 3 + 2] = '↘'
+                    if 5 in card.arrow_ids:
+                        board_text[x * 14 + 7][y * 3 + 2] = '↓'
+                    if 6 in card.arrow_ids:
+                        board_text[x * 14 + 2][y * 3 + 2] = '↙'
+                    if 7 in card.arrow_ids:
+                        board_text[x * 14 + 1][y * 3 + 1] = '←'
+        stringified = ''
+        for col in range(text_height):
+            for row in range(text_width):
+                stringified += board_text[row][col]
             stringified += '\n'
         for player, hand in enumerate(self.player_hands):
             stringified += f'\nPlayer {player} hand: {[str(c) for c in hand]}'
@@ -181,7 +213,7 @@ def facing_position_directions(card, position, board):
         x_offset, y_offset = arrow_directions[arrow_id]
         facing_x = x + x_offset
         facing_y = y + y_offset
-        if facing_x >= 0 and x < width and facing_y >= 0 and facing_y < height:
+        if facing_x >= 0 and facing_x < width and facing_y >= 0 and facing_y < height:
             facing.append((arrow_id, facing_x, facing_y))
     return facing
 
