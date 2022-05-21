@@ -13,8 +13,6 @@ arrow_directions = [
     (-1, 0) # left
 ]
 
-tie_result = 2
-
 class Wall:
     def __init__(self):
         self.type = 'wall'
@@ -116,6 +114,13 @@ class GameState:
                     else:
                         new_board[facing_x][facing_y] = CardState(facing.card, facing.controller, new_target_hp)
         return GameState(new_board, new_hands, other_player(self.current_player))
+    def score(self):
+        points = collections.defaultdict(int)
+        for column in self.board:
+            for cell in column:
+                if cell is not None and cell.type == 'card':
+                    points[cell.controller] += 1
+        return points
     def equivalent(self, other):
         return self.current_player == other.current_player and self.board == other.board
     def __str__(self):
@@ -188,17 +193,11 @@ class Game:
                     repetitions += 1
             game_over = repetitions >= 3
         if game_over:
-            points = collections.defaultdict(int)
-            for column in state.board:
-                for cell in column:
-                    if cell is not None and cell.type == 'card':
-                        points[cell.controller] += 1
-            if points[0] > points[1]:
-                return 0
-            elif points[1] > points[0]:
+            points = state.score()
+            if points[1] > points[0]:
                 return 1
             else:
-                return tie_result
+                return 0
         return None
 
 def other_player(player):
