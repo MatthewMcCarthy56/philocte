@@ -1,6 +1,8 @@
 import collections
 import itertools
+import json_fix
 import random
+import uuid
 
 arrow_directions = [
     (-1, -1), # up left
@@ -18,6 +20,8 @@ tie_result = 2
 class Wall:
     def __init__(self):
         self.type = 'wall'
+    def __json__(self):
+        return self.__dict__
     def __repr__(self):
         return 'Wall()'
 
@@ -33,8 +37,11 @@ class Card:
         self.physical_defense = physical_defense
         self.magical_defense = magical_defense
         self.owner = owner
+        self.id = str(uuid.uuid4())
     def with_full_health(self, controller):
         return CardState(self, controller, self.max_hp)
+    def __json__(self):
+        return self.__dict__
     def __str__(self):
         return f'{self.max_hp} {self.attack_strength}{self.attack_type}{self.physical_defense}{self.magical_defense}'
 
@@ -44,6 +51,8 @@ class CardState:
         self.card = card
         self.controller = controller
         self.hp = hp
+    def __json__(self):
+        return self.__dict__
     def __str__(self):
         return f'{self.controller}:{self.hp}/{str(self.card)}'
     def __eq__(self, other):
@@ -59,7 +68,7 @@ class GameState:
     def turn(self, card: Card, position, attack_order):
         x, y = position
         new_board = [list(l) for l in self.board]
-        new_hands = [set(l) for l in self.player_hands]
+        new_hands = [list(l) for l in self.player_hands]
         new_hands[self.current_player].remove(card)
         card_state = card.with_full_health(self.current_player)
         new_board[x][y] = card_state
@@ -126,6 +135,8 @@ class GameState:
         return points
     def equivalent(self, other):
         return self.current_player == other.current_player and self.board == other.board
+    def __json__(self):
+        return self.__dict__
     def __str__(self):
         text_width = 14 * len(self.board)
         text_height = 3 * len(self.board[0])
