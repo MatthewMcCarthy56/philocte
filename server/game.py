@@ -13,6 +13,8 @@ arrow_directions = [
     (-1, 0) # left
 ]
 
+tie_result = 2
+
 class Wall:
     def __init__(self):
         self.type = 'wall'
@@ -70,7 +72,7 @@ class GameState:
                 faced = new_board[facing_x][facing_y]
                 if faced is not None and faced.type == 'card' and faced.controller != battle_winner:
                     new_board[facing_x][facing_y] = faced.card.with_full_health(battle_winner)
-        died = False
+        gone = False
         battled = set()
         for direction_id in attack_order:
             # Do all battles first
@@ -89,6 +91,7 @@ class GameState:
                 new_hands[target.controller].add(card)
                 new_board[target_x][target_y] = None
                 new_hands[self.current_player].add(target.card)
+                gone = True
                 break
             elif new_target_hp <= 0:
                 # Defeated target - combo
@@ -96,11 +99,11 @@ class GameState:
             elif card_state.hp <= 0:
                 # Attacking card was defeated - combo
                 combo(target.controller, position)
-                died = True
+                gone = True
             else:
                 # Both survived
                 new_board[target_x][target_y] = CardState(target.card, target.controller, new_target_hp)
-        if not died:
+        if not gone:
             # Still alive, can do non-battle damage
             for facing_pos in facing_positions(card_state.card, position, self.board):
                 if facing_pos in battled:
@@ -184,6 +187,7 @@ class Game:
     def check_win(self):
         state = self.current_state()
         game_over = False
+        by_repetition = False
         if len(state.player_hands[0]) == 0 and len(state.player_hands[1]) == 0:
             game_over = True
         else:
@@ -191,11 +195,15 @@ class Game:
             for old_state in self.history:
                 if state.equivalent(old_state):
                     repetitions += 1
-            game_over = repetitions >= 3
+            if repetitions >= 3:
+                by_repetition = True
+                game_over = True
         if game_over:
             points = state.score()
             if points[1] > points[0]:
                 return 1
+            elif points[0] == points[1] and by_repetition:
+                return tie_result
             else:
                 return 0
         return None

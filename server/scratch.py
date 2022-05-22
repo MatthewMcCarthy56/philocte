@@ -19,8 +19,7 @@ print(g.current_state())
 g.turn(gorgant, (2, 1), [7])
 print(g.current_state())
 
-print(game.battle_directions(dark_matter, (0, 0), g.current_state().board, 0))
-g.turn(dark_matter, (0, 0), [4])
+g.turn(dark_matter, (2, 0), [5, 6])
 print(g.current_state())
 
 g.turn(mog, (4, 0), [])
