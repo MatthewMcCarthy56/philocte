@@ -1,0 +1,86 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-rows: 1fr 3fr 1fr;
+  aspect-ratio: 1;
+  height:150px;
+  width:150px;
+}
+.wrapper > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.upperLeft {
+  grid-column: 1;
+  grid-row: 1;
+}
+.upperMid {
+    grid-column: 2;
+    grid-row: 1;
+}
+.upperRight {
+    grid-column: 3;
+    grid-row: 1;
+}
+.middleRight {
+    grid-column: 3;
+    grid-row: 2;
+}
+.bottomRight {
+    grid-column: 3;
+    grid-row: 3;
+}
+.bottomMid {
+    grid-column: 2;
+    grid-row: 3;
+}
+.bottomLeft {
+    grid-column: 1;
+    grid-row: 3;
+}
+.middleLeft {
+    grid-column: 1;
+    grid-row: 2;
+}
+.middle {
+    grid-column: 2;
+    grid-row: 2;
+}
+.cardInfo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  width: 100%;
+  height: 100%;
+}
+.hpValue {
+  grid-column: 1;
+  grid-row: 1;
+}
+.attackValue {
+  grid-column: 2;
+  grid-row: 1;
+  text-align:right;
+}
+.name {
+  grid-column: 1/3;
+  grid-row: 2;
+  text-align: center;
+  align-self: center;
+}
+.physicalDefense {
+  grid-column: 1;
+  grid-row: 3;
+  align-self: flex-end;
+}
+.magicalDefense {
+  grid-column: 2;
+  grid-row: 3;
+  text-align:right;
+  align-self: flex-end;
+}
+.arrow {
+  width:30px;
+  height:30px;
+}

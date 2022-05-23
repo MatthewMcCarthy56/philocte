@@ -1,0 +1,9 @@
+.wall {
+    width: 150px;
+    height: 150px;
+    background-color: black;
+}
+.empty {
+    width: 150px;
+    height: 150px;
+}
