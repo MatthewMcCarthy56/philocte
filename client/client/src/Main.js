@@ -30,6 +30,7 @@ function Main(props) {
     var [selectedSpace, setSelectedSpace] = useState(null);
     var [neededBattles, setNeededBattles] = useState(null);
     var [selectedBattles, setSelectedBattles] = useState(null);
+    var [winner, setWinner] = useState(null);
     useEffect(() => {
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
@@ -41,7 +42,8 @@ function Main(props) {
                 setHand([]);
                 console.log("Connected");
             } else if (message.winner !== undefined) {
-                // Somebody won - TODO
+                // Somebody won
+                setWinner(message.winner);
             } else {
                 // Gameplay update
                 setBoard(message.board);
@@ -77,7 +79,7 @@ function Main(props) {
                 <div>{status}</div>
             </div>
         );
-    } else {
+    } else if (winner == null) {
         // Playing phase
         const cardClick = (card) => {
             if (currentPlayer != playerId) return;
@@ -147,6 +149,22 @@ function Main(props) {
                 <Hand cardInfo={opponentHand} color={opponentColor}></Hand>
                 <Board board={board} spaceOnClick={spaceClick} cardOnClick={battleClick}></Board>
                 <Hand cardInfo={hand} color={userColor} cardOnClick={cardClick}></Hand>
+            </div>
+        );
+    } else {
+        // Game over
+        var gameOverMessage = "";
+        if (winner == 2) {
+            gameOverMessage = "It's a tie!"
+        } else if (winner == playerId) {
+            gameOverMessage = "You won!"
+        } else {
+            gameOverMessage = "You lost."
+        }
+        return (
+            <div>
+                <Board board={board}></Board>
+                <div>{gameOverMessage}</div>
             </div>
         );
     }
