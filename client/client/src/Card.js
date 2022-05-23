@@ -5,12 +5,16 @@ import arrow from "./assets/arrow.png"
 
 // Props: cardInfo, color, hp, onClick
 const Card = (props) => {
-    const clickHandler = () => props.onClick(props.cardInfo);
-    const hasArrow = [false, false, false, false, false, false, false, false];
-    for (var a in props.cardInfo.arrow_ids) {
+    const clickHandler = () => {
+        if (props.onClick) {
+            props.onClick(props.cardInfo);
+        }
+    }
+    var hasArrow = [false, false, false, false, false, false, false, false];
+    for (var a of props.cardInfo.arrow_ids) {
         hasArrow[a] = true;
     }
-    const show = (i) => (hasArrow[i] ? 'auto' : 'none');
+    let show = (i) => (hasArrow[i] ? 'auto' : 'none');
     return (
         <div className={styles.wrapper} style={{backgroundColor: props.color}} onClick={clickHandler}>
             <div className={styles.upperLeft}>

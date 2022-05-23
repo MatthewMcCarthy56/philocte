@@ -8,7 +8,7 @@ const Deck = (props) => {
     return (
         <div className={styles.deck}>
             {props.deckInfo.map((element, index) => (
-                <Card key={index} cardInfo={element} color="lightgray" hp={element.max_hp} onClick={props.cardOnClick} />
+                <Card key={element.id} cardInfo={element} color="lightgray" hp={element.max_hp} onClick={props.cardOnClick} />
             ))}  
         </div>
     )

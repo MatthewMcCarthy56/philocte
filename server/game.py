@@ -97,9 +97,9 @@ class GameState:
             if new_target_hp <= 0 and card_state.hp <= 0:
                 # Both dead - pop
                 new_board[x][y] = None
-                new_hands[target.controller].add(card)
+                new_hands[target.controller].append(card)
                 new_board[target_x][target_y] = None
-                new_hands[self.current_player].add(target.card)
+                new_hands[self.current_player].append(target.card)
                 gone = True
                 break
             elif new_target_hp <= 0:

@@ -52,6 +52,7 @@ async def websocket_server(websocket, path):
         position = tuple(play_message['position'])
         battle_order = play_message['battle_order']
         g.turn(card, position, battle_order)
+        print(g.current_state())
         await broadcast_json(g.current_state())
         winner = g.check_win()
         if winner is not None:
